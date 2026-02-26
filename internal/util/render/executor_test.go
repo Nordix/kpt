@@ -25,6 +25,8 @@ import (
 	"github.com/kptdev/kpt/internal/fnruntime"
 	"github.com/kptdev/kpt/internal/pkg"
 	"github.com/kptdev/kpt/internal/types"
+	kptfilev1 "github.com/kptdev/kpt/pkg/api/kptfile/v1"
+	"github.com/kptdev/kpt/pkg/kptfile/kptfileutil"
 	"github.com/kptdev/kpt/pkg/printer"
 	"github.com/stretchr/testify/assert"
 	"sigs.k8s.io/kustomize/kyaml/filesys"
@@ -568,6 +570,228 @@ func TestRenderer_PrintPipelineExecutionSummary(t *testing.T) {
 			renderer.printPipelineExecutionSummary(pr, hctx, tc.hydErr)
 
 			assert.Equal(t, tc.expectedOutput, outputBuffer.String())
+		})
+	}
+}
+
+func TestUpdateRenderStatus_Success(t *testing.T) {
+	mockFS := filesys.MakeFsInMemory()
+	rootPath := rootString
+	assert.NoError(t, mockFS.Mkdir(rootPath))
+
+	subPkgPath := "/root/subpkg"
+	assert.NoError(t, mockFS.Mkdir(subPkgPath))
+
+	assert.NoError(t, mockFS.WriteFile(filepath.Join(rootPath, "Kptfile"), []byte(`
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: root-package
+`)))
+	assert.NoError(t, mockFS.WriteFile(filepath.Join(subPkgPath, "Kptfile"), []byte(`
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: sub-package
+`)))
+
+	rootPkg, err := pkg.New(mockFS, rootPath)
+	assert.NoError(t, err)
+	subPkg, err := pkg.New(mockFS, subPkgPath)
+	assert.NoError(t, err)
+
+	hctx := &hydrationContext{
+		root:       &pkgNode{pkg: rootPkg},
+		pkgs:       map[types.UniquePath]*pkgNode{},
+		fileSystem: mockFS,
+	}
+	hctx.pkgs[rootPkg.UniquePath] = &pkgNode{pkg: rootPkg}
+	hctx.pkgs[subPkg.UniquePath] = &pkgNode{pkg: subPkg}
+
+	updateRenderStatus(hctx, nil)
+
+	// Verify root Kptfile has success condition
+	rootKf, err := kptfileutil.ReadKptfile(mockFS, rootPath)
+	assert.NoError(t, err)
+	assert.NotNil(t, rootKf.Status)
+	assert.Len(t, rootKf.Status.Conditions, 1)
+	assert.Equal(t, kptfilev1.ConditionTypeRendered, rootKf.Status.Conditions[0].Type)
+	assert.Equal(t, kptfilev1.ConditionTrue, rootKf.Status.Conditions[0].Status)
+	assert.Equal(t, kptfilev1.ReasonRenderSuccess, rootKf.Status.Conditions[0].Reason)
+
+	// Verify subpkg Kptfile has success condition
+	subKf, err := kptfileutil.ReadKptfile(mockFS, subPkgPath)
+	assert.NoError(t, err)
+	assert.NotNil(t, subKf.Status)
+	assert.Len(t, subKf.Status.Conditions, 1)
+	assert.Equal(t, kptfilev1.ConditionTrue, subKf.Status.Conditions[0].Status)
+}
+
+func TestUpdateRenderStatus_MutationFailure(t *testing.T) {
+	mockFS := filesys.MakeFsInMemory()
+	rootPath := rootString
+	assert.NoError(t, mockFS.Mkdir(rootPath))
+
+	assert.NoError(t, mockFS.WriteFile(filepath.Join(rootPath, "Kptfile"), []byte(`
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: root-package
+`)))
+
+	rootPkg, err := pkg.New(mockFS, rootPath)
+	assert.NoError(t, err)
+
+	hctx := &hydrationContext{
+		root:       &pkgNode{pkg: rootPkg},
+		pkgs:       map[types.UniquePath]*pkgNode{},
+		fileSystem: mockFS,
+	}
+	hctx.pkgs[rootPkg.UniquePath] = &pkgNode{pkg: rootPkg}
+
+	updateRenderStatus(hctx, fmt.Errorf("set-annotations failed: some error"))
+
+	rootKf, err := kptfileutil.ReadKptfile(mockFS, rootPath)
+	assert.NoError(t, err)
+	assert.NotNil(t, rootKf.Status)
+	assert.Len(t, rootKf.Status.Conditions, 1)
+	assert.Equal(t, kptfilev1.ConditionFalse, rootKf.Status.Conditions[0].Status)
+	assert.Equal(t, kptfilev1.ReasonMutationFailed, rootKf.Status.Conditions[0].Reason)
+	assert.Contains(t, rootKf.Status.Conditions[0].Message, "set-annotations failed")
+}
+
+func TestUpdateRenderStatus_ValidationFailure(t *testing.T) {
+	mockFS := filesys.MakeFsInMemory()
+	rootPath := rootString
+	assert.NoError(t, mockFS.Mkdir(rootPath))
+
+	assert.NoError(t, mockFS.WriteFile(filepath.Join(rootPath, "Kptfile"), []byte(`
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: root-package
+`)))
+
+	rootPkg, err := pkg.New(mockFS, rootPath)
+	assert.NoError(t, err)
+
+	hctx := &hydrationContext{
+		root:       &pkgNode{pkg: rootPkg},
+		pkgs:       map[types.UniquePath]*pkgNode{},
+		fileSystem: mockFS,
+	}
+	hctx.pkgs[rootPkg.UniquePath] = &pkgNode{pkg: rootPkg}
+
+	updateRenderStatus(hctx, fmt.Errorf("validator kubeval failed: validation error"))
+
+	rootKf, err := kptfileutil.ReadKptfile(mockFS, rootPath)
+	assert.NoError(t, err)
+	assert.NotNil(t, rootKf.Status)
+	assert.Len(t, rootKf.Status.Conditions, 1)
+	assert.Equal(t, kptfilev1.ConditionFalse, rootKf.Status.Conditions[0].Status)
+	assert.Equal(t, kptfilev1.ReasonValidationFailed, rootKf.Status.Conditions[0].Reason)
+}
+
+func TestUpdateRenderStatus_ReplacesExistingCondition(t *testing.T) {
+	mockFS := filesys.MakeFsInMemory()
+	rootPath := rootString
+	assert.NoError(t, mockFS.Mkdir(rootPath))
+
+	// Kptfile with an existing Rendered condition from a previous run
+	assert.NoError(t, mockFS.WriteFile(filepath.Join(rootPath, "Kptfile"), []byte(`
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: root-package
+status:
+  conditions:
+  - type: Rendered
+    status: "False"
+    reason: MutationFailed
+    message: "old error"
+`)))
+
+	rootPkg, err := pkg.New(mockFS, rootPath)
+	assert.NoError(t, err)
+
+	hctx := &hydrationContext{
+		root:       &pkgNode{pkg: rootPkg},
+		pkgs:       map[types.UniquePath]*pkgNode{},
+		fileSystem: mockFS,
+	}
+	hctx.pkgs[rootPkg.UniquePath] = &pkgNode{pkg: rootPkg}
+
+	updateRenderStatus(hctx, nil)
+
+	rootKf, err := kptfileutil.ReadKptfile(mockFS, rootPath)
+	assert.NoError(t, err)
+	assert.NotNil(t, rootKf.Status)
+	assert.Len(t, rootKf.Status.Conditions, 1)
+	assert.Equal(t, kptfilev1.ConditionTrue, rootKf.Status.Conditions[0].Status)
+	assert.Equal(t, kptfilev1.ReasonRenderSuccess, rootKf.Status.Conditions[0].Reason)
+	assert.Empty(t, rootKf.Status.Conditions[0].Message)
+}
+
+func TestUpdateRenderStatus_NestedPackageFailure(t *testing.T) {
+	mockFS := filesys.MakeFsInMemory()
+	rootPath := rootString
+	assert.NoError(t, mockFS.Mkdir(rootPath))
+
+	assert.NoError(t, mockFS.WriteFile(filepath.Join(rootPath, "Kptfile"), []byte(`
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: root-package
+`)))
+
+	rootPkg, err := pkg.New(mockFS, rootPath)
+	assert.NoError(t, err)
+
+	hctx := &hydrationContext{
+		root:       &pkgNode{pkg: rootPkg},
+		pkgs:       map[types.UniquePath]*pkgNode{},
+		fileSystem: mockFS,
+	}
+	hctx.pkgs[rootPkg.UniquePath] = &pkgNode{pkg: rootPkg}
+
+	// Simulate a nested package failure error (as produced by hydrate())
+	updateRenderStatus(hctx, fmt.Errorf("pipeline.run: subpkg: set-annotations1 failed: validation error"))
+
+	rootKf, err := kptfileutil.ReadKptfile(mockFS, rootPath)
+	assert.NoError(t, err)
+	assert.NotNil(t, rootKf.Status)
+	assert.Len(t, rootKf.Status.Conditions, 1)
+	assert.Equal(t, kptfilev1.ConditionFalse, rootKf.Status.Conditions[0].Status)
+	assert.Equal(t, kptfilev1.ReasonPipelineFailed, rootKf.Status.Conditions[0].Reason)
+	assert.Contains(t, rootKf.Status.Conditions[0].Message, "subpkg")
+}
+
+func TestRenderFailureReason(t *testing.T) {
+	tests := []struct {
+		name     string
+		err      string
+		expected string
+	}{
+		{
+			name:     "validation error",
+			err:      "validator kubeval failed: validation error",
+			expected: kptfilev1.ReasonValidationFailed,
+		},
+		{
+			name:     "pipeline error",
+			err:      "pipeline.run: /root: some error",
+			expected: kptfilev1.ReasonPipelineFailed,
+		},
+		{
+			name:     "mutation error",
+			err:      "set-annotations failed: some error",
+			expected: kptfilev1.ReasonMutationFailed,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.expected, renderFailureReason(fmt.Errorf("%s", tc.err)))
 		})
 	}
 }

@@ -109,6 +109,7 @@ func (e *Renderer) Execute(ctx context.Context) (*fnresult.ResultList, error) {
 	_, hydErr := hydrateFn(ctx, root, hctx)
 
 	if hydErr != nil && !hctx.saveOnRenderFailure {
+		updateRenderStatus(hctx, hydErr)
 		_ = e.saveFnResults(ctx, hctx.fnResults)
 		return hctx.fnResults, errors.E(op, root.pkg.UniquePath, hydErr)
 	}
@@ -173,9 +174,14 @@ func (e *Renderer) Execute(ctx context.Context) (*fnresult.ResultList, error) {
 	}
 
 	if hydErr != nil {
+		// Update render status with failure before returning
+		updateRenderStatus(hctx, hydErr)
 		_ = e.saveFnResults(ctx, hctx.fnResults) // Ignore save error to avoid masking hydration error
 		return hctx.fnResults, errors.E(op, root.pkg.UniquePath, hydErr)
 	}
+
+	// Update render status with success after resources are written
+	updateRenderStatus(hctx, nil)
 
 	return hctx.fnResults, e.saveFnResults(ctx, hctx.fnResults)
 }
@@ -189,6 +195,71 @@ func (e *Renderer) printPipelineExecutionSummary(pr printer.Printer, hctx hydrat
 		} else {
 			pr.Printf("Partially executed %d function(s) in %d package(s).\n", hctx.executedFunctionCnt, len(hctx.pkgs))
 		}
+	}
+}
+
+// updateRenderStatus writes a Rendered status condition to the Kptfile for each
+// package that was processed. On success, each package gets a True condition.
+// On failure, the failing package gets a False condition with the error details,
+// and the root Kptfile also records the failure if it differs from the failing package.
+func updateRenderStatus(hctx *hydrationContext, hydErr error) {
+	if hctx.fileSystem == nil {
+		return
+	}
+
+	if hydErr == nil {
+		// Success: update all packages with success condition
+		for _, pn := range hctx.pkgs {
+			setRenderCondition(hctx.fileSystem, pn.pkg.UniquePath.String(),
+				kptfilev1.NewRenderedCondition(kptfilev1.ConditionTrue, kptfilev1.ReasonRenderSuccess, ""))
+		}
+		return
+	}
+
+	// Failure: set failure condition on root package
+	reason := renderFailureReason(hydErr)
+	// Make error message relative by stripping the root package path
+	msg := hydErr.Error()
+	rootPath := hctx.root.pkg.UniquePath.String()
+	msg = strings.ReplaceAll(msg, rootPath, ".")
+	setRenderCondition(hctx.fileSystem, rootPath,
+		kptfilev1.NewRenderedCondition(kptfilev1.ConditionFalse, reason, msg))
+}
+
+// renderFailureReason classifies a hydration error into a condition reason.
+func renderFailureReason(err error) string {
+	msg := err.Error()
+	if strings.Contains(msg, "pipeline.run") {
+		return kptfilev1.ReasonPipelineFailed
+	}
+	if strings.Contains(msg, "validator") || strings.Contains(msg, "validation") {
+		return kptfilev1.ReasonValidationFailed
+	}
+	return kptfilev1.ReasonMutationFailed
+}
+
+// setRenderCondition reads the Kptfile at pkgPath, sets the Rendered condition, and writes it back.
+func setRenderCondition(fs filesys.FileSystem, pkgPath string, condition kptfilev1.Condition) {
+	fsOrDisk := filesys.FileSystemOrOnDisk{FileSystem: fs}
+	kf, err := kptfileutil.ReadKptfile(fsOrDisk, pkgPath)
+	if err != nil {
+		return
+	}
+	if kf.Status == nil {
+		kf.Status = &kptfilev1.Status{}
+	}
+	// Replace any existing Rendered condition
+	conditions := make([]kptfilev1.Condition, 0, len(kf.Status.Conditions))
+	for _, c := range kf.Status.Conditions {
+		if c.Type != kptfilev1.ConditionTypeRendered {
+			conditions = append(conditions, c)
+		}
+	}
+	kf.Status.Conditions = append(conditions, condition)
+	if fs != nil {
+		_ = kptfileutil.WriteKptfileToFS(fs, pkgPath, kf)
+	} else {
+		_ = kptfileutil.WriteFile(pkgPath, kf)
 	}
 }
 
