@@ -28,7 +28,7 @@ upstreamLock:
     commit: 4d2aa98b45ddee4b5fa45fbca16f2ff887de9efb
 pipeline:
   mutators:
-    - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
+    - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.4.5
       configMap:
         namespace: some-space
     - image: ghcr.io/kptdev/krm-functions-catalog/apply-setters:latest

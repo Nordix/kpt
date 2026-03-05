@@ -18,12 +18,12 @@ stdErrStripLines:
 
 testType: eval
 
-image: set-namespace:v0.2.0
+image: set-namespace:v0.4.5
 
 args:
   namespace: staging
 
 stdErr: |
-  [RUNNING] "ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0"
-  [PASS] "ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0" in 0s
-  Added "ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0" as validator in the Kptfile.
+  [RUNNING] "ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.4.5"
+  [PASS] "ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.4.5" in 0s
+  Added "ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.4.5" as validator in the Kptfile.
