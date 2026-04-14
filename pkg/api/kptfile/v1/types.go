@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"strings"
 
+	k8sapiv1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"sigs.k8s.io/kustomize/kyaml/yaml"
 )
@@ -410,8 +411,8 @@ func (i Inventory) IsValid() bool {
 }
 
 type Status struct {
-	Conditions   []Condition   `yaml:"conditions,omitempty" json:"conditions,omitempty"`
-	RenderStatus *RenderStatus `yaml:"renderStatus,omitempty" json:"renderStatus,omitempty"`
+	Conditions   []k8sapiv1.Condition `yaml:"conditions,omitempty" json:"conditions,omitempty"`
+	RenderStatus *RenderStatus        `yaml:"renderStatus,omitempty" json:"renderStatus,omitempty"`
 }
 
 // RenderStatus represents the result of performing render operation
@@ -437,8 +438,8 @@ type PipelineStepResult struct {
 
 // ResultItem mirrors framework.Result with only the fields needed for Kptfile status.
 type ResultItem struct {
-	Message     string `yaml:"message,omitempty" json:"message,omitempty"`
-	Severity    string `yaml:"severity,omitempty" json:"severity,omitempty"`
+	Message     string       `yaml:"message,omitempty" json:"message,omitempty"`
+	Severity    string       `yaml:"severity,omitempty" json:"severity,omitempty"`
 	ResourceRef *ResourceRef `yaml:"resourceRef,omitempty" json:"resourceRef,omitempty"`
 	Field       *FieldRef    `yaml:"field,omitempty" json:"field,omitempty"`
 	File        *FileRef     `yaml:"file,omitempty" json:"file,omitempty"`
@@ -465,24 +466,6 @@ type FileRef struct {
 	Index int    `yaml:"index,omitempty" json:"index,omitempty"`
 }
 
-type Condition struct {
-	Type string `yaml:"type" json:"type"`
-
-	Status ConditionStatus `yaml:"status" json:"status"`
-
-	Reason string `yaml:"reason,omitempty" json:"reason,omitempty"`
-
-	Message string `yaml:"message,omitempty" json:"message,omitempty"`
-}
-
-type ConditionStatus string
-
-const (
-	ConditionTrue    ConditionStatus = "True"
-	ConditionFalse   ConditionStatus = "False"
-	ConditionUnknown ConditionStatus = "Unknown"
-)
-
 // Rendered condition type and reasons
 const (
 	ConditionTypeRendered = "Rendered"
@@ -491,8 +474,8 @@ const (
 )
 
 // NewRenderedCondition creates a Rendered status condition.
-func NewRenderedCondition(status ConditionStatus, reason, message string) Condition {
-	return Condition{
+func NewRenderedCondition(status k8sapiv1.ConditionStatus, reason, message string) k8sapiv1.Condition {
+	return k8sapiv1.Condition{
 		Type:    ConditionTypeRendered,
 		Status:  status,
 		Reason:  reason,
@@ -509,15 +492,15 @@ const (
 	SaveOnRenderFailureAnnotation = "kpt.dev/save-on-render-failure"
 )
 
-func ToCondition(value string) ConditionStatus {
+func ToCondition(value string) k8sapiv1.ConditionStatus {
 	switch strings.ToLower(value) {
-	case strings.ToLower(string(ConditionTrue)):
-		return ConditionTrue
+	case strings.ToLower(string(k8sapiv1.ConditionTrue)):
+		return k8sapiv1.ConditionTrue
 
-	case strings.ToLower(string(ConditionFalse)):
-		return ConditionFalse
+	case strings.ToLower(string(k8sapiv1.ConditionFalse)):
+		return k8sapiv1.ConditionFalse
 
 	default:
-		return ConditionUnknown
+		return k8sapiv1.ConditionUnknown
 	}
 }

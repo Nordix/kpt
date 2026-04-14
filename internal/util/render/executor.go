@@ -35,6 +35,7 @@ import (
 	"github.com/kptdev/kpt/pkg/lib/errors"
 	"github.com/kptdev/kpt/pkg/lib/runneroptions"
 	"github.com/kptdev/kpt/pkg/printer"
+	k8sapiv1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 	"sigs.k8s.io/kustomize/kyaml/filesys"
 	"sigs.k8s.io/kustomize/kyaml/fn/framework"
@@ -97,7 +98,7 @@ func (e *Renderer) Execute(ctx context.Context) (*fnresult.ResultList, error) {
 	}
 
 	// Read save-on-render-failure behavior from Kptfile annotation
-	if value, exists := kptfile.Annotations[kptfilev1.SaveOnRenderFailureAnnotation]; exists && kptfilev1.ToCondition(value) == kptfilev1.ConditionTrue {
+	if value, exists := kptfile.Annotations[kptfilev1.SaveOnRenderFailureAnnotation]; exists && kptfilev1.ToCondition(value) == k8sapiv1.ConditionTrue {
 		hctx.saveOnRenderFailure = true
 	}
 
@@ -105,7 +106,7 @@ func (e *Renderer) Execute(ctx context.Context) (*fnresult.ResultList, error) {
 	// If the annotation "kpt.dev/bfs-rendering" is set to "true", use hydrateBfsOrder
 	// otherwise use the default hydrate function in depth-first post-order.
 	hydrateFn := hydrate
-	if value, exists := kptfile.Annotations[kptfilev1.BFSRenderAnnotation]; exists && kptfilev1.ToCondition(value) == kptfilev1.ConditionTrue {
+	if value, exists := kptfile.Annotations[kptfilev1.BFSRenderAnnotation]; exists && kptfilev1.ToCondition(value) == k8sapiv1.ConditionTrue {
 		hydrateFn = hydrateBfsOrder
 	}
 
@@ -223,11 +224,11 @@ func updateRenderStatus(hctx *hydrationContext, hydErr error) {
 	}
 
 	rootPath := hctx.root.pkg.UniquePath.String()
-	conditionStatus := kptfilev1.ConditionTrue
+	conditionStatus := k8sapiv1.ConditionTrue
 	reason := kptfilev1.ReasonRenderSuccess
 	message := ""
 	if hydErr != nil {
-		conditionStatus = kptfilev1.ConditionFalse
+		conditionStatus = k8sapiv1.ConditionFalse
 		reason = kptfilev1.ReasonRenderFailed
 		message = strings.ReplaceAll(hydErr.Error(), rootPath, ".")
 	}
@@ -276,7 +277,7 @@ func stepName(s kptfilev1.PipelineStepResult) string {
 }
 
 // setRenderStatus reads the Kptfile at pkgPath, sets the Rendered condition and RenderStatus, and writes it back.
-func setRenderStatus(fs filesys.FileSystem, pkgPath string, condition kptfilev1.Condition, renderStatus *kptfilev1.RenderStatus) {
+func setRenderStatus(fs filesys.FileSystem, pkgPath string, condition k8sapiv1.Condition, renderStatus *kptfilev1.RenderStatus) {
 	fsOrDisk := filesys.FileSystemOrOnDisk{FileSystem: fs}
 	kf, err := kptfileutil.ReadKptfile(fsOrDisk, pkgPath)
 	if err != nil {
@@ -287,7 +288,7 @@ func setRenderStatus(fs filesys.FileSystem, pkgPath string, condition kptfilev1.
 		kf.Status = &kptfilev1.Status{}
 	}
 	// Replace any existing Rendered condition
-	kf.Status.Conditions = slices.DeleteFunc(kf.Status.Conditions, func(c kptfilev1.Condition) bool {
+	kf.Status.Conditions = slices.DeleteFunc(kf.Status.Conditions, func(c k8sapiv1.Condition) bool {
 		return c.Type == kptfilev1.ConditionTypeRendered
 	})
 	kf.Status.Conditions = append(kf.Status.Conditions, condition)
