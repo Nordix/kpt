@@ -13,7 +13,7 @@ index 950565f..d9be19c 100644
  info:
 @@ -16,3 +16,19 @@ pipeline:
        configPath: update-labels.yaml
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
        configPath: label-input.yaml
 +status:
 +  conditions:
@@ -22,14 +22,14 @@ index 950565f..d9be19c 100644
 +      reason: RenderSuccess
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.4.1
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 +        exitCode: 0
 +        results:
 +          - message: namespace "example" updated to "frontend", 2 value(s) changed
 +            severity: info
 +      - image: ghcr.io/kptdev/krm-functions-catalog/apply-replacements:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
 diff --git a/app.yaml b/app.yaml
 index 3361e5b..33f2627 100644

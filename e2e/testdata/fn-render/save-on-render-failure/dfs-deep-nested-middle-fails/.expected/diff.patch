@@ -14,7 +14,7 @@ index 4047d27..02908a2 100644
    description: DFS - Deep nested, middle level fails
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
        configMap:
 -        level: "root"
 +        level: root
@@ -28,9 +28,9 @@ index 4047d27..02908a2 100644
 +        	pipeline.run: already handled error
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
 +    validationSteps:
 +      - image: ghcr.io/kptdev/krm-functions-catalog/starlark:latest
@@ -82,7 +82,7 @@ index 314d402..29e69db 100644
    description: Level2 that succeeds
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
        configMap:
 -        level: "level2"
 +        level: level2

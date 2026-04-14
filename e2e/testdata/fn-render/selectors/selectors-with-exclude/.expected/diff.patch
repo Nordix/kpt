@@ -10,9 +10,9 @@ index c16cdca..1fd5efb 100644
 +    tier: backend
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 @@ -15,3 +17,14 @@ pipeline:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
        configMap:
          tier: backend
 +status:
@@ -22,9 +22,9 @@ index c16cdca..1fd5efb 100644
 +      reason: RenderSuccess
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
 diff --git a/resources.yaml b/resources.yaml
 index d3ed04c..f66e542 100644

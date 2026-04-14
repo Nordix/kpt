@@ -20,7 +20,7 @@ index 2985a1a..30b4376 100644
 +      reason: RenderSuccess
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
 diff --git a/kustomization.yaml b/kustomization.yaml
 index f3f0207..6c517af 100644

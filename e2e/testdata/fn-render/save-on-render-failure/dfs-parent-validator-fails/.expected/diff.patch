@@ -16,7 +16,7 @@ index b402aed..04ef8db 100644
    description: DFS - Parent validator fails
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
        configMap:
 -        test: "parent-fail"
 +        test: parent-fail
@@ -33,9 +33,9 @@ index b402aed..04ef8db 100644
 +        	pipeline.run: already handled error
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
 +    validationSteps:
 +      - image: ghcr.io/kptdev/krm-functions-catalog/starlark:latest

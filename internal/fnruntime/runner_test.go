@@ -668,7 +668,7 @@ func TestHasTagOrDigest(t *testing.T) {
 		// With explicit tag
 		{"tag", "nginx:1.25", true},
 		{"latest tag", "nginx:latest", true},
-		{"full path with tag", "ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5", true},
+		{"full path with tag", "ghcr.io/kptdev/krm-functions-catalog/set-labels:latest", true},
 
 		// With digest
 		{"digest only", "nginx@sha256:abc123", true},

@@ -10,7 +10,7 @@ index c2cf3ba..d0bbc91 100644
 +    tier: db
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
        configPath: confs/labelconfig.yaml
 +status:
 +  conditions:
@@ -19,7 +19,7 @@ index c2cf3ba..d0bbc91 100644
 +      reason: RenderSuccess
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
 diff --git a/confs/labelconfig.yaml b/confs/labelconfig.yaml
 index 22d2de2..19e0746 100644

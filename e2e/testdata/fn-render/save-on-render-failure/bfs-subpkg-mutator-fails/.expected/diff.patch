@@ -17,7 +17,7 @@ index 84b93a6..f9f5122 100644
    description: BFS - Subpackage mutator fails
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
        configMap:
 -        test: "mutator-fail"
 +        test: mutator-fail
@@ -31,9 +31,9 @@ index 84b93a6..f9f5122 100644
 +        	pipeline.run: pkg ./subpkg: already handled error
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 +        exitCode: 0
 +      - image: ghcr.io/kptdev/krm-functions-catalog/starlark:latest
 +        stderr: 'failed to evaluate function: error: function failure'

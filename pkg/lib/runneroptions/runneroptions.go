@@ -65,7 +65,7 @@ func (opts *RunnerOptions) InitDefaults(defaultImagePrefix string) {
 }
 
 // ResolveToImageForCLIFunc returns a func that converts the KRM function short path to the full image url.
-// If the function is a catalog function, it prepends `prefix`, e.g. "set-namespace:v0.1" --> prefix + "set-namespace:v0.1".
+// If the function is a catalog function, it prepends `prefix`, e.g. "set-namespace:latest" --> prefix + "set-namespace:latest".
 // A "/" is appended to `prefix` if it is not an empty string and does not end with a "/".
 func ResolveToImageForCLIFunc(prefix string) ImageResolveFunc {
 	prefix = strings.TrimRight(prefix, "/")

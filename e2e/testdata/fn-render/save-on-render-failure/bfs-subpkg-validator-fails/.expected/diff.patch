@@ -18,7 +18,7 @@ index 86dbe13..755cbd3 100644
    description: BFS - Subpackage validator fails
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
        configMap:
 -        test: "subpkg-fail"
 -        level: "root"
@@ -34,9 +34,9 @@ index 86dbe13..755cbd3 100644
 +        	pipeline.run: pkg ./subpkg: already handled error
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 +        exitCode: 0
 +    validationSteps:
 +      - image: ghcr.io/kptdev/krm-functions-catalog/starlark:latest

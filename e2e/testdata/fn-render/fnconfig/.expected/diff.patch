@@ -11,10 +11,10 @@ index 043dcac..58ddc42 100644
 +    tier: db
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 @@ -9,3 +12,18 @@ pipeline:
          namespace: staging
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
        configPath: labelconfig.yaml
 +status:
 +  conditions:
@@ -23,13 +23,13 @@ index 043dcac..58ddc42 100644
 +      reason: RenderSuccess
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
 diff --git a/db/Kptfile b/db/Kptfile
 index 264dd2e..8dd7c37 100644
@@ -45,7 +45,7 @@ index 264dd2e..8dd7c37 100644
 +    tier: db
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 diff --git a/db/resources.yaml b/db/resources.yaml
 index dabe43c..e9be40c 100644
 --- a/db/resources.yaml

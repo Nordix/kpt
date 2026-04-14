@@ -6,18 +6,18 @@ index 8a2f9e1..49b7fb6 100644
    name: no-save-on-render-failure
  pipeline:
    mutators:
--  - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
+-  - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 -    configMap:
 -      namespace: staging
--  - image: ghcr.io/kptdev/krm-functions-catalog/set-annotations:v0.1.4
+-  - image: ghcr.io/kptdev/krm-functions-catalog/set-annotations:latest
 -    configMap:
 -      app: myapp
 -  - image: ghcr.io/kptdev/krm-functions-catalog/starlark:latest
 -    configPath: starlark-fn-failure.yaml
-+    - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
++    - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 +      configMap:
 +        namespace: staging
-+    - image: ghcr.io/kptdev/krm-functions-catalog/set-annotations:v0.1.4
++    - image: ghcr.io/kptdev/krm-functions-catalog/set-annotations:latest
 +      configMap:
 +        app: myapp
 +    - image: ghcr.io/kptdev/krm-functions-catalog/starlark:latest
@@ -32,9 +32,9 @@ index 8a2f9e1..49b7fb6 100644
 +        	pipeline.run: already handled error
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-annotations:v0.1.4
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-annotations:latest
 +        exitCode: 0
 +      - image: ghcr.io/kptdev/krm-functions-catalog/starlark:latest
 +        stderr: 'failed to evaluate function: error: function failure'

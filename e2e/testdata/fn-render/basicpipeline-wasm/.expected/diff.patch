@@ -3,7 +3,7 @@ index 17a7822..98fa855 100644
 --- a/Kptfile
 +++ b/Kptfile
 @@ -12,3 +12,22 @@ pipeline:
-     - image: ghcr.io/kptdev/krm-functions-catalog/wasm/set-labels:v0.2.4
+     - image: ghcr.io/kptdev/krm-functions-catalog/wasm/set-labels:latest
        configMap:
          tier: backend
 +status:
@@ -13,14 +13,14 @@ index 17a7822..98fa855 100644
 +      reason: RenderSuccess
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/wasm/set-namespace:v0.5.1
++      - image: ghcr.io/kptdev/krm-functions-catalog/wasm/set-namespace:latest
 +        exitCode: 0
 +        results:
 +          - message: namespace [default] updated to "staging", 1 value(s) changed
 +            severity: info
 +          - message: all `depends-on` annotations are up-to-date. no `namespace` changed
 +            severity: info
-+      - image: ghcr.io/kptdev/krm-functions-catalog/wasm/set-labels:v0.2.4
++      - image: ghcr.io/kptdev/krm-functions-catalog/wasm/set-labels:latest
 +        exitCode: 0
 +        results:
 +          - message: set 4 labels in total

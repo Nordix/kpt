@@ -431,9 +431,7 @@ func (r *Runner) preparePackage(pkgPath string) error {
 	return err
 }
 
-func (r *Runner) compareResult(exitErr error, stdout string, inStderr string, tmpPkgPath, resultsPath string) error {
-	stderr := r.stripLines(inStderr, r.testCase.Config.StdErrStripLines)
-
+func (r *Runner) compareResult(exitErr error, stdout string, stderr string, tmpPkgPath, resultsPath string) error {
 	expected, err := newExpected(tmpPkgPath)
 	if err != nil {
 		return err
@@ -460,8 +458,6 @@ func (r *Runner) compareResult(exitErr error, stdout string, inStderr string, tm
 	if err != nil {
 		return fmt.Errorf("failed to read actual results: %w", err)
 	}
-
-	actualResults = r.stripLines(actualResults, r.testCase.Config.ActualStripLines)
 
 	diffOfResult, err := diffStrings(actualResults, expected.Results)
 	if err != nil {
@@ -634,16 +630,6 @@ func (r *Runner) updateExpected(tmpPkgPath, resultsPath, sourceOfTruthPath strin
 	}
 
 	return nil
-}
-
-func (r *Runner) stripLines(string2Strip string, linesToStrip []string) string {
-	strippedString := string2Strip
-
-	for _, line2Strip := range linesToStrip {
-		strippedString = strings.ReplaceAll(strippedString, line2Strip+"\n", "")
-	}
-
-	return strippedString
 }
 
 // normalizeDiff removes lines matching stripRegEx and normalizes index/hunk

@@ -17,7 +17,7 @@ index e9fad85..b0d2fb6 100644
    description: BFS - Multiple subpackages, sub2 fails
  pipeline:
 @@ -12,3 +14,30 @@ pipeline:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
        configMap:
          pkg: root
 +status:
@@ -30,11 +30,11 @@ index e9fad85..b0d2fb6 100644
 +        	pipeline.run: pkg ./sub2: already handled error
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
 +    validationSteps:
 +      - image: ghcr.io/kptdev/krm-functions-catalog/starlark:latest
@@ -74,7 +74,7 @@ index 2d62077..0f03268 100644
 +    pkg: sub1
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 diff --git a/sub1/deployment.yaml b/sub1/deployment.yaml
 index 2f649ba..c2245a9 100644
 --- a/sub1/deployment.yaml
@@ -106,7 +106,7 @@ index 853d3f0..89cfa33 100644
 +    pkg: sub2
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 diff --git a/sub2/deployment.yaml b/sub2/deployment.yaml
 index 20375ea..7290360 100644
 --- a/sub2/deployment.yaml
@@ -151,7 +151,7 @@ index ff35b98..958a351 100644
 +    pkg: root
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 diff --git a/sub3/deployment.yaml b/sub3/deployment.yaml
 index dc257b3..3a13d11 100644
 --- a/sub3/deployment.yaml

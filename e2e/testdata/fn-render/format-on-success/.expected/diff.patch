@@ -9,7 +9,7 @@ index dbab15c..3ab935c 100644
 +  namespace: staging
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
        configMap:
          namespace: staging
 +status:
@@ -19,9 +19,9 @@ index dbab15c..3ab935c 100644
 +      reason: RenderSuccess
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 +        exitCode: 0
 diff --git a/db/Kptfile b/db/Kptfile
 index 92bb0fc..31aafaa 100644
@@ -34,7 +34,7 @@ index 92bb0fc..31aafaa 100644
 +  namespace: staging
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 diff --git a/db/resources.yaml b/db/resources.yaml
 index dabe43c..b44084a 100644
 --- a/db/resources.yaml

@@ -17,7 +17,7 @@ index 17ef3d8..93810be 100644
    description: BFS - Parent validator fails
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
        configMap:
 -        test: "parent-fail"
 +        test: parent-fail
@@ -34,7 +34,7 @@ index 17ef3d8..93810be 100644
 +        	pipeline.run: already handled error
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
 +    validationSteps:
 +      - image: ghcr.io/kptdev/krm-functions-catalog/starlark:latest

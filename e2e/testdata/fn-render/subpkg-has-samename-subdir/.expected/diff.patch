@@ -13,7 +13,7 @@ index 701e0a1..63952e8 100644
 +      reason: RenderSuccess
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 +        exitCode: 0
 diff --git a/pkg-a/Kptfile b/pkg-a/Kptfile
 index 088bc03..c42f368 100644

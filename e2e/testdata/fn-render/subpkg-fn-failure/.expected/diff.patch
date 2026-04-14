@@ -3,7 +3,7 @@ index 364e274..4e01e27 100644
 --- a/Kptfile
 +++ b/Kptfile
 @@ -12,3 +12,23 @@ pipeline:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
        configMap:
          tier: backend
 +status:

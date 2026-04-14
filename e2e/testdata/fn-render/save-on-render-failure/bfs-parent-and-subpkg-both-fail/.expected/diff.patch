@@ -28,7 +28,7 @@ index 867a54b..6ccc3b8 100644
 +        	pipeline.run: already handled error
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        stderr: '[error] : failed to run function: may not add resource with an already registered id: fn.kpt.dev_v1alpha1_StarlarkRun|~X|always-fail'
 +        exitCode: 1
 +        results:
@@ -37,4 +37,4 @@ index 867a54b..6ccc3b8 100644
 +        errorResults:
 +          - message: 'failed to run function: may not add resource with an already registered id: fn.kpt.dev_v1alpha1_StarlarkRun|~X|always-fail'
 +            severity: error
-+    errorSummary: 'ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5: exit code 1'
++    errorSummary: 'ghcr.io/kptdev/krm-functions-catalog/set-labels:latest: exit code 1'

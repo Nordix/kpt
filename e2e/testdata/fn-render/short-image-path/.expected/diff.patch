@@ -11,7 +11,7 @@ index d4e5935..24022da 100644
 +    tier: backend
  pipeline:
    mutators:
-     - image: set-namespace:v0.2.0
+     - image: set-namespace:latest
 @@ -10,3 +13,14 @@ pipeline:
      - image: set-labels:v0.1.5
        configMap:
@@ -23,9 +23,9 @@ index d4e5935..24022da 100644
 +      reason: RenderSuccess
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
 diff --git a/resources.yaml b/resources.yaml
 index f2eec52..84cfb26 100644

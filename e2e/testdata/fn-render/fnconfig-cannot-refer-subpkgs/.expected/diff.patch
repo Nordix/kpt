@@ -4,7 +4,7 @@ index 0bfdbb0..10e2d27 100644
 +++ b/Kptfile
 @@ -6,3 +6,13 @@ pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
        configPath: db/labelconfig.yaml
 +status:
 +  conditions:

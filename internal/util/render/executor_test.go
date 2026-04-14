@@ -742,8 +742,8 @@ func TestBuildRenderStatus_NoSteps(t *testing.T) {
 func TestBuildRenderStatus_SuccessWithMutationSteps(t *testing.T) {
 	hctx := &hydrationContext{
 		mutationSteps: []kptfilev1.PipelineStepResult{
-			{Image: "set-namespace:v1", ExitCode: 0},
-			{Image: "set-annotations:v1", ExitCode: 0},
+			{Image: "set-namespace:latest", ExitCode: 0},
+			{Image: "set-annotations:latest", ExitCode: 0},
 		},
 	}
 	rs := buildRenderStatus(hctx, nil)
@@ -756,7 +756,7 @@ func TestBuildRenderStatus_SuccessWithMutationSteps(t *testing.T) {
 func TestBuildRenderStatus_FailureWithErrorSummary(t *testing.T) {
 	hctx := &hydrationContext{
 		mutationSteps: []kptfilev1.PipelineStepResult{
-			{Image: "set-namespace:v1", ExitCode: 0},
+			{Image: "set-namespace:latest", ExitCode: 0},
 			{Image: "bad-image:v1", ExitCode: 1},
 		},
 		validationSteps: []kptfilev1.PipelineStepResult{
@@ -838,10 +838,10 @@ func TestCaptureStepResult_FromFnResults(t *testing.T) {
 
 func TestCaptureStepResult_NoNewItems(t *testing.T) {
 	fnResults := fnresult.NewResultList()
-	fn := kptfilev1.Function{Image: "set-namespace:v1"}
+	fn := kptfilev1.Function{Image: "set-namespace:latest"}
 	step := captureStepResult(fn, fnResults, 0, fmt.Errorf("output resource list must contain only KRM resources"))
 
-	assert.Equal(t, "set-namespace:v1", step.Image)
+	assert.Equal(t, "set-namespace:latest", step.Image)
 	assert.Equal(t, 1, step.ExitCode)
 	assert.Equal(t, "output resource list must contain only KRM resources", step.ExecutionError)
 	assert.Nil(t, step.Results)
@@ -927,7 +927,7 @@ metadata:
 		pkgs:       map[types.UniquePath]*pkgNode{},
 		fileSystem: mockFS,
 		mutationSteps: []kptfilev1.PipelineStepResult{
-			{Image: "set-namespace:v1", ExitCode: 0},
+			{Image: "set-namespace:latest", ExitCode: 0},
 		},
 		validationSteps: []kptfilev1.PipelineStepResult{
 			{Image: "gatekeeper:latest", ExitCode: 1, Stderr: "failed"},
@@ -948,7 +948,7 @@ metadata:
 	rs := rootKf.Status.RenderStatus
 	assert.NotNil(t, rs)
 	assert.Len(t, rs.MutationSteps, 1)
-	assert.Equal(t, "set-namespace:v1", rs.MutationSteps[0].Image)
+	assert.Equal(t, "set-namespace:latest", rs.MutationSteps[0].Image)
 	assert.Len(t, rs.ValidationSteps, 1)
 	assert.Equal(t, "gatekeeper:latest", rs.ValidationSteps[0].Image)
 	assert.Contains(t, rs.ErrorSummary, "gatekeeper:latest: exit code 1")

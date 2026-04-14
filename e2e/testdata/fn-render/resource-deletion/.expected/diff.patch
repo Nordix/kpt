@@ -13,7 +13,7 @@ index 364e274..f17e769 100644
    mutators:
      - image: ghcr.io/kptdev/krm-functions-catalog/starlark:latest
 @@ -12,3 +15,16 @@ pipeline:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
        configMap:
          tier: backend
 +status:
@@ -25,9 +25,9 @@ index 364e274..f17e769 100644
 +    mutationSteps:
 +      - image: ghcr.io/kptdev/krm-functions-catalog/starlark:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
 diff --git a/deployment_httpbin.yaml b/deployment_httpbin.yaml
 deleted file mode 100644

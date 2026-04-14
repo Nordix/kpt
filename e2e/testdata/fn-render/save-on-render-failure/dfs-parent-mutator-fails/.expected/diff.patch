@@ -16,7 +16,7 @@ index 207a7ca..c351a54 100644
    description: DFS - Parent mutator fails
  pipeline:
    mutators:
-     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
+     - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
        configMap:
 -        test: "parent-mutator-fail"
 +        test: parent-mutator-fail
@@ -32,9 +32,9 @@ index 207a7ca..c351a54 100644
 +        	pipeline.run: already handled error
 +  renderStatus:
 +    mutationSteps:
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:v0.2.0
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-namespace:latest
 +        exitCode: 0
-+      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:v0.1.5
++      - image: ghcr.io/kptdev/krm-functions-catalog/set-labels:latest
 +        exitCode: 0
 +      - image: ghcr.io/kptdev/krm-functions-catalog/starlark:latest
 +        stderr: 'failed to evaluate function: error: function failure'
