@@ -10,7 +10,7 @@ index 2985a1a..30b4376 100644
 +    tier: backend
  pipeline:
    mutators:
-     - image: set-labels:v0.1.5
+     - image: set-labels:latest
        configMap:
          tier: backend
 +status:

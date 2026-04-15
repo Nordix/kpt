@@ -13,7 +13,7 @@ index d4e5935..24022da 100644
    mutators:
      - image: set-namespace:latest
 @@ -10,3 +13,14 @@ pipeline:
-     - image: set-labels:v0.1.5
+     - image: set-labels:latest
        configMap:
          tier: backend
 +status:

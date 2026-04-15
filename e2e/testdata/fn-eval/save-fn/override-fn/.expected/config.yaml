@@ -12,10 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-stdErrStripLines:
-  - "  Stderr:"
-  - "    \"WARNING: The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested\""
-
 testType: eval
 
 image: set-namespace:latest
